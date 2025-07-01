@@ -117,6 +117,28 @@ export default function CadastrarImovelPage() {
   const [complemento, setComplemento] = useState("");
   const [cidade, setCidade] = useState("");
 
+  const formatarMoeda = (valor: string) => {
+    // Remove tudo que não for número
+    const valorNumerico = valor.replace(/\D/g, "");
+
+    // Converte para número e formata em moeda BRL
+    const valorFormatado = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(Number(valorNumerico) / 100);
+
+    return valorFormatado;
+  };
+
+  const [valorFormatado, setValorvalorFormatado] = useState("");
+
+  // No onChange:
+  const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valorDigitado = e.target.value;
+    const valorNumerico = valorDigitado.replace(/\D/g, "");
+    setValorvalorFormatado(formatarMoeda(valorNumerico));
+  };
+
   // --- ESTADOS DE CONTROLE ---
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -395,11 +417,8 @@ export default function CadastrarImovelPage() {
           {/* Coluna Esquerda: Benefícios */}
           <div className="flex flex-col justify-start h-full">
             <h2 className="text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
-              Ajudamos você a vender seu imóvel de forma rápida e fácil
+              Ajudo Alugar/Vender seu imóvel de forma rápida e fácil
             </h2>
-            <p className="text-xl text-gray-500 mb-10">
-              Publique nos portais do mercado imobiliário.
-            </p>
             <div className="space-y-8 mb-16">
               {[
                 "Preencha o formulário com as informações do seu imóvel.",
@@ -437,7 +456,7 @@ export default function CadastrarImovelPage() {
                   <TrendingUp size={44} className="text-blue-600" />
                 </div>
                 <p className="text-base text-gray-600 text-center">
-                  Aumento em suas vendas com a melhor segmentação
+                  Aumento na velocidade em que seu imovel e alugado ou vendido.
                 </p>
               </div>
               <div className="flex flex-col items-center">
@@ -445,7 +464,8 @@ export default function CadastrarImovelPage() {
                   <Megaphone size={44} className="text-blue-600" />
                 </div>
                 <p className="text-base text-gray-600 text-center">
-                  Maior visibilidade em seus anúncios
+                  Maior visibilidade em seus anúncios, publicado no site do
+                  Quinto Andar.
                 </p>
               </div>
             </div>
@@ -552,11 +572,11 @@ export default function CadastrarImovelPage() {
                     </option>
                   </select>
                   <input
-                    type="number"
+                    type="text" // use text para permitir formatação
                     placeholder="Valor de Venda (se aplicável)"
                     className={inputClass}
-                    value={valor}
-                    onChange={(e) => setValor(e.target.value)}
+                    value={valorFormatado}
+                    onChange={handleValorChange}
                   />
                 </div>
 
