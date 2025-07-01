@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Award, TrendingUp, Megaphone } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebaseConfig";
@@ -129,7 +129,7 @@ export default function CadastrarImovelPage() {
 
   // --- ESTADOS PARA DADOS DO FIREBASE ---
   const [parametrosDb, setParametrosDb] = useState<ParametroBairro[]>([]);
-  const [imoveisDb, setImoveisDb] = useState<DadosCaptacaoImovel[]>([]);
+  // Removi imoveisDb pois não está sendo usado
   const [loadingParametros, setLoadingParametros] = useState(true);
 
   // --- CARREGAR DADOS DO FIREBASE ---
@@ -142,12 +142,8 @@ export default function CadastrarImovelPage() {
         const parametros = docsData.filter(
           (doc): doc is ParametroBairro => doc.tipoDocumento === "parametro"
         );
-        const imoveis = docsData.filter(
-          (doc): doc is DadosCaptacaoImovel => doc.tipoDocumento === "imovel"
-        );
 
         setParametrosDb(parametros);
-        setImoveisDb(imoveis);
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
         setErroCalculadora(
@@ -162,7 +158,7 @@ export default function CadastrarImovelPage() {
   }, []);
 
   // --- FUNÇÃO DE CÁLCULO DA ESTIMATIVA ---
-  const calculateAluguel = () => {
+  const calculateAluguel = useCallback(() => {
     setValorAluguelEstimado(null);
     setErroCalculadora(null);
 
@@ -201,7 +197,7 @@ export default function CadastrarImovelPage() {
       return;
     }
 
-    let valorBase = area * paramsTipo.valor_m2_medio;
+    const valorBase = area * paramsTipo.valor_m2_medio;
     let ajustes = 0;
 
     if (numQuartos > 0 && paramsTipo.ajustes_base.quartos !== undefined) {
@@ -260,23 +256,14 @@ export default function CadastrarImovelPage() {
         maximumFractionDigits: 2,
       })}`
     );
-  };
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      calculateAluguel();
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
   }, [
     tipo,
+    bairro,
     areaInterna,
     areaExterna,
     quartos,
     suites,
-    banheiros,
     vagas,
-    bairro,
     estadoConservacao,
     temPiscina,
     temAcademia,
@@ -284,6 +271,14 @@ export default function CadastrarImovelPage() {
     parametrosDb,
     loadingParametros,
   ]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      calculateAluguel();
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [calculateAluguel]);
 
   // --- ENVIO DO FORMULÁRIO ---
   const handleSubmit = async (e: React.FormEvent) => {

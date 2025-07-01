@@ -1,6 +1,6 @@
 // src/lib/firebaseConfig.ts
 
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -15,8 +15,6 @@ const firebaseConfig = {
 };
 console.log("Firebase Config:", firebaseConfig);
 
-// Padrão de inicialização "Singleton" para Next.js
-// Se nenhum app foi inicializado, inicialize um. Senão, pegue o app já existente.
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
 export const auth = getAuth(app);

@@ -1,7 +1,9 @@
-import { doc, runTransaction, collection, setDoc } from "firebase/firestore";
+import { doc, runTransaction, collection } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
-export async function criarImovelComIdSequencial(dadosImovel: any) {
+export async function criarImovelComIdSequencial(
+  dadosImovel: Record<string, unknown>
+) {
   const counterRef = doc(db, "counters", "imoveis");
   const imoveisCollection = collection(db, "imoveis");
 
@@ -9,7 +11,7 @@ export async function criarImovelComIdSequencial(dadosImovel: any) {
     const counterDoc = await transaction.get(counterRef);
     let lastId = 0;
     if (counterDoc.exists()) {
-      lastId = counterDoc.data().lastId || 0;
+      lastId = (counterDoc.data().lastId as number) || 0;
     }
     const nextId = lastId + 1;
 
