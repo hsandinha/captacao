@@ -403,8 +403,8 @@ export default function CadastrarImovelPage() {
             <div className="space-y-8 mb-16">
               {[
                 "Preencha o formulário com as informações do seu imóvel.",
-                "Seu contato e as informações serão direcionados para um captador especialista da nossa imobiliária.",
-                "Nosso captador fará contato para agendar a visita de avaliação do seu imóvel e da documentação imobiliária.",
+                "Voce tera um valor estimado de aluguel e seu contato e as informações serão direcionados para o captador.",
+                "Nosso captador fará contato para alinhamento dos proximos passos.",
               ].map((txt, idx) => (
                 <div key={idx} className="flex items-center">
                   <span className="text-4xl font-extrabold text-blue-600 mr-6">{`0${
@@ -413,6 +413,11 @@ export default function CadastrarImovelPage() {
                   <p className="text-lg text-gray-700">{txt}</p>
                 </div>
               ))}
+              <img
+                src="/hebert.jpg"
+                alt="Captador Responsavel"
+                className="mx-auto mt-6 w-12/12 h-auto"
+              />
             </div>
             <hr className="my-8" />
             <h2 className="text-2xl font-bold text-gray-800 mb-8">
